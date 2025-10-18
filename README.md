@@ -94,6 +94,12 @@ Open `http://localhost:5173` for the Vite dev server.
 - Frontend linting: `npm run lint` from `/client`
 - Recommended future work: Jest unit tests, Cypress E2E.
 
+## Known Security Advisories
+
+- `validator@13.15.15` (transitively required by `express-validator`) is subject to [GHSA-9965-vmph-33xx](https://github.com/advisories/GHSA-9965-vmph-33xx).
+  - A patched release is not yet available upstream; the project avoids the vulnerable `isURL` helper while monitoring for updates.
+  - Review the advisory before production deployment and apply the recommended patch once published.
+
 ## Deployment Tips
 
 - Use a process manager (PM2) for the backend.
