@@ -11,7 +11,7 @@ A full-stack commission calculator for software development projects. The applic
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 18+ (run `nvm use` to load the pinned version from `.nvmrc`)
 - npm 9+
 - MySQL 8+
 

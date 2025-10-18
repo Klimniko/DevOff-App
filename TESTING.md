@@ -25,3 +25,8 @@
 - Reinstalled dependencies for both frontend and backend without errors; npm reported zero vulnerabilities on the client and two known moderate advisories on the server pending upstream fixes.
 - Executed `npm run lint` in `client/` and `server/` and observed clean passes.
 - Ran `npm run build` in `client/`; the production bundle generated successfully with Vite 7 and no warnings.
+
+## 2025-10-23
+- Confirmed Node.js version alignment via the new `.nvmrc` pin (`nvm use` resolves to 18.18.0`).
+- Re-ran `npm run lint` in both `client/` and `server/`; both completed with zero warnings.
+- Executed `npm run build` from `client/` to verify the removal of `packageManager` metadata introduced no build regressions.
