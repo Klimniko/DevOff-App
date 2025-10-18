@@ -58,60 +58,58 @@ export async function exportPdf(req, res) {
 
 export async function bulkExport(req, res) {
   const { ids = [], format = 'csv' } = req.body;
-  const data = await listCalculations(req.user.id, { page: 1, pageSize: ids.length || 1000 });
-  const filtered = ids.length ? data.items.filter((item) => ids.includes(String(item.id)) || ids.includes(item.id)) : data.items;
+  const normalizedFormat = typeof format === 'string' ? format.toLowerCase() : 'csv';
+  const normalizedIds = ids.map((id) => String(id));
+  const requestedSize = normalizedIds.length || 1000;
+  const data = await listCalculations(req.user.id, { page: 1, pageSize: requestedSize });
+  const filtered = normalizedIds.length
+    ? data.items.filter((item) => normalizedIds.includes(String(item.id)))
+    : data.items;
 
-  if (format === 'csv') {
   if (!filtered.length) {
     return res.status(404).json({ message: 'No calculations available for export' });
   }
 
-  const parser = new Parser();
-  const csv = parser.parse(filtered);
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=calculations.csv');
-    return res.send(csv);
-  }
-
-  if (format === 'excel') {
-    if (!filtered.length) {
-      return res.status(404).json({ message: 'No calculations available for export' });
+  switch (normalizedFormat) {
+    case 'csv': {
+      const parser = new Parser();
+      const csv = parser.parse(filtered);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=calculations.csv');
+      return res.send(csv);
     }
-
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Calculations');
-    sheet.columns = Object.keys(filtered[0] || {}).map((key) => ({ header: key, key }));
-    filtered.forEach((item) => sheet.addRow(item));
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=calculations.xlsx');
-    await workbook.xlsx.write(res);
-    res.end();
-    return;
-  }
-
-  if (format === 'pdf') {
-    if (!filtered.length) {
-      return res.status(404).json({ message: 'No calculations available for export' });
+    case 'excel': {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Calculations');
+      sheet.columns = Object.keys(filtered[0]).map((key) => ({ header: key, key }));
+      filtered.forEach((item) => sheet.addRow(item));
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', 'attachment; filename=calculations.xlsx');
+      await workbook.xlsx.write(res);
+      res.end();
+      return;
     }
-
-    const doc = new PDFDocument({ margin: 50 });
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=calculations.pdf');
-    doc.pipe(res);
-    doc.fontSize(20).text('DevOff Commission Portfolio', { align: 'center' });
-    doc.moveDown();
-    filtered.forEach((item) => {
-      doc.fontSize(14).text(item.project_name, { underline: true });
-      Object.entries(item).forEach(([key, value]) => {
-        if (['project_name', 'id', 'user_id'].includes(key)) return;
-        doc.fontSize(10).text(`${key}: ${value}`);
-      });
+    case 'pdf': {
+      const doc = new PDFDocument({ margin: 50 });
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=calculations.pdf');
+      doc.pipe(res);
+      doc.fontSize(20).text('DevOff Commission Portfolio', { align: 'center' });
       doc.moveDown();
-    });
-    doc.end();
-    return;
+      filtered.forEach((item) => {
+        doc.fontSize(14).text(item.project_name, { underline: true });
+        Object.entries(item).forEach(([key, value]) => {
+          if (['project_name', 'id', 'user_id'].includes(key)) return;
+          doc.fontSize(10).text(`${key}: ${value}`);
+        });
+        doc.moveDown();
+      });
+      doc.end();
+      return;
+    }
+    default: {
+      logger.warn('Unsupported export format requested: %s', format);
+      return res.status(400).json({ message: 'Unsupported export format' });
+    }
   }
-
-  logger.warn('Unsupported export format requested: %s', format);
-  return res.status(400).json({ message: 'Unsupported export format' });
 }

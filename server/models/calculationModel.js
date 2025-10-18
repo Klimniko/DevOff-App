@@ -55,16 +55,19 @@ export async function updateCalculation(id, userId, payload) {
     userId
   ];
 
-  await pool.execute(
+  const [result] = await pool.execute(
     `UPDATE calculations
      SET project_name = ?, project_description = ?, buying_price_usd = ?, selling_price_eur = ?, exchange_rate = ?, commission_eur = ?, working_days = ?, calculation_date = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ? AND user_id = ?`,
     fields
   );
+
+  return result.affectedRows;
 }
 
 export async function deleteCalculation(id, userId) {
-  await pool.execute('DELETE FROM calculations WHERE id = ? AND user_id = ?', [id, userId]);
+  const [result] = await pool.execute('DELETE FROM calculations WHERE id = ? AND user_id = ?', [id, userId]);
+  return result.affectedRows;
 }
 
 export async function findCalculationById(id, userId) {
@@ -123,9 +126,9 @@ export async function getDashboardStats(userId) {
   );
 
   return {
-    totalCommission,
-    averageCommission,
-    totalProjects,
+    totalCommission: Number(totalCommission),
+    averageCommission: Number(averageCommission),
+    totalProjects: Number(totalProjects),
     recent: recent.map(normalizeCalculation),
     topCommission: normalizeCalculation(topCommission || null),
     lastCalculation: normalizeCalculation(lastCalculation || null)

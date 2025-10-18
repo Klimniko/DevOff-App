@@ -10,9 +10,12 @@ async function fetchRate(force = false) {
     return cached;
   }
 
-  const response = await axios.get(process.env.CURRENCY_API_URL, {
-    params: { access_key: process.env.CURRENCY_API_KEY }
-  });
+  const config = {};
+  if (process.env.CURRENCY_API_KEY) {
+    config.params = { access_key: process.env.CURRENCY_API_KEY };
+  }
+
+  const response = await axios.get(process.env.CURRENCY_API_URL, config);
 
   const rate = response.data?.rates?.EUR || response.data?.conversion_rates?.EUR;
 
