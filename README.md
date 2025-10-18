@@ -11,7 +11,7 @@ A full-stack commission calculator for software development projects. The applic
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 18+ (run `nvm use` to load the pinned version from `.nvmrc`)
 - npm 9+
 - MySQL 8+
 
@@ -90,15 +90,15 @@ Open `http://localhost:5173` for the Vite dev server.
 
 ## Testing & Quality
 
+- Full QA sweep: `./scripts/qa-check.sh` (add `--skip-install` if dependencies are already installed)
 - Backend linting: `npm run lint` from `/server`
 - Frontend linting: `npm run lint` from `/client`
 - Recommended future work: Jest unit tests, Cypress E2E.
 
 ## Known Security Advisories
 
-- `validator@13.15.15` (transitively required by `express-validator`) is subject to [GHSA-9965-vmph-33xx](https://github.com/advisories/GHSA-9965-vmph-33xx).
-  - A patched release is not yet available upstream; the project avoids the vulnerable `isURL` helper while monitoring for updates.
-  - Review the advisory before production deployment and apply the recommended patch once published.
+- As of 2025-10-25, `npm audit` reports zero known vulnerabilities across the client and server dependency trees.
+  - Continue to rerun `npm audit` during regular maintenance cycles and apply upstream patches promptly if advisories surface.
 
 ## Deployment Tips
 
