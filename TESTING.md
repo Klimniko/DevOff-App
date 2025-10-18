@@ -30,3 +30,8 @@
 - Confirmed Node.js version alignment via the new `.nvmrc` pin (`nvm use` resolves to 18.18.0`).
 - Re-ran `npm run lint` in both `client/` and `server/`; both completed with zero warnings.
 - Executed `npm run build` from `client/` to verify the removal of `packageManager` metadata introduced no build regressions.
+
+## 2025-10-24
+- Reinstalled frontend dependencies (`npm install` inside `client/`) and validated both `npm run lint` and `npm run build` complete without warnings using Vite 7.
+- Reinstalled backend dependencies (`npm install` inside `server/`) and confirmed `npm run lint` succeeds; `npm audit` still reports the upstream `validator` advisory (GHSA-9965-vmph-33xx) with no patched release available.
+- Documented the outstanding dependency advisory in `README.md` so deployers can track the upstream fix before production rollouts.
