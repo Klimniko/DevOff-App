@@ -16,7 +16,7 @@ function DashboardPage() {
       try {
         const data = await dashboardService.getStats();
         setStats(data);
-      } catch (error) {
+      } catch {
         toast.error('Unable to load dashboard data');
       } finally {
         setLoading(false);

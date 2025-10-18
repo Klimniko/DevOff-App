@@ -62,7 +62,7 @@ function CalculationsListPage() {
     try {
       await exportService.exportCalculation(id, 'pdf');
       toast.success('Export started');
-    } catch (error) {
+    } catch {
       toast.error('Export failed');
     }
   };

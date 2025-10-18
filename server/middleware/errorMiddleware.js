@@ -1,6 +1,6 @@
 import logger from '../utils/logger.js';
 
-export default function errorHandler(err, req, res, next) {
+export default function errorHandler(err, req, res, _next) {
   logger.error('Error processing request %s %s: %o', req.method, req.originalUrl, err);
   const status = err.status || 500;
   res.status(status).json({

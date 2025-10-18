@@ -17,7 +17,7 @@ function CalculationDetailsPage() {
       try {
         const data = await calculationService.get(id);
         setCalculation(data);
-      } catch (error) {
+      } catch {
         toast.error('Unable to load calculation');
       } finally {
         setLoading(false);
@@ -40,7 +40,7 @@ function CalculationDetailsPage() {
     try {
       await exportService.exportCalculation(id, format);
       toast.success(`${format.toUpperCase()} export ready`);
-    } catch (error) {
+    } catch {
       toast.error('Export failed');
     }
   };

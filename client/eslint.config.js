@@ -34,6 +34,7 @@ export default [
     },
     rules: {
       'react/jsx-uses-react': 'off',
+      'react/jsx-uses-vars': 'error',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'warn',
       'react-hooks/rules-of-hooks': 'error',
