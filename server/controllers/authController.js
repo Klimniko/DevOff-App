@@ -1,14 +1,8 @@
 import bcrypt from 'bcrypt';
-import { validationResult } from 'express-validator';
 import { findUserByUsername, findUserById } from '../models/userModel.js';
 import { issueToken, clearToken } from '../middleware/authMiddleware.js';
 
 export async function login(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'Invalid input', errors: errors.array() });
-  }
-
   const { username, password } = req.body;
   const user = await findUserByUsername(username);
 

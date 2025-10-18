@@ -1,4 +1,3 @@
-import { validationResult } from 'express-validator';
 import {
   createCalculation,
   deleteCalculation,
@@ -13,7 +12,8 @@ function normalizePayload(payload) {
   const rate = Number.parseFloat(payload.exchange_rate);
   const workingDays = Number.parseInt(payload.working_days, 10);
   const projectName = typeof payload.project_name === 'string' ? payload.project_name.trim() : '';
-  const projectDescription = typeof payload.project_description === 'string' ? payload.project_description.trim() : null;
+  const projectDescription =
+    typeof payload.project_description === 'string' ? payload.project_description.trim() : null;
 
   if (!projectName) {
     const error = new Error('Project name is required');
@@ -53,11 +53,6 @@ function normalizePayload(payload) {
 }
 
 export async function create(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'Invalid input', errors: errors.array() });
-  }
-
   const payload = normalizePayload(req.body);
   const created = await createCalculation(req.user.id, payload);
   const record = await findCalculationById(created.id, req.user.id);
@@ -65,10 +60,6 @@ export async function create(req, res) {
 }
 
 export async function update(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'Invalid input', errors: errors.array() });
-  }
   const { id } = req.params;
   const payload = normalizePayload(req.body);
   const affected = await updateCalculation(id, req.user.id, payload);

@@ -44,3 +44,9 @@
 ## 2025-10-26
 - Added `scripts/qa-check.sh` to orchestrate dependency installs (optional), linting, and the production build from a single command.
 - Executed `./scripts/qa-check.sh --skip-install`; server lint, client lint, and client build all completed successfully.
+
+## 2025-10-27
+- Authored `scripts/deploy-home-lab.sh` to automate Ubuntu provisioning (apt prerequisites, Node.js 18, MySQL 8), generate the
+  `.env` configuration, apply the schema, build the client, and launch the production server on port 5000.
+- Re-ran `./scripts/qa-check.sh --skip-install` to confirm lint and production build continue to succeed after the deployment
+  automation was added.

@@ -81,6 +81,20 @@ Open `http://localhost:5173` for the Vite dev server.
    NODE_ENV=production npm start
    ```
 
+## One-Command Home Lab Deployment
+
+On an Ubuntu host you can provision all prerequisites, configure MySQL, build the React frontend, and launch the Express server
+with a single command:
+
+```bash
+sudo ./scripts/deploy-home-lab.sh
+```
+
+The script installs Node.js 18, MySQL 8, required build tooling, applies `database/schema.sql`, generates an `.env` file (and
+matching `server/.env`), compiles the client, and starts the backend in production mode. When it finishes the application is
+available at `http://localhost:5000`, and logs are written to `/var/log/commission-calculator.log`. Update the generated
+`CURRENCY_API_KEY` value in `.env` with your real provider key to enable live exchange rates.
+
 ## Export Utilities
 
 - **CSV**: `/api/export/csv/:id`
